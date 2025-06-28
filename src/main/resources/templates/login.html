@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enter Your Name</title>
+</head>
+<body>
+<h2>Welcome to Group Chat</h2>
+<form th:action="@{/set-username}" method="post">
+    <input type="text" name="username" placeholder="Enter your name" required/>
+    <button type="submit">Enter Chat</button>
+</form>
+</body>
+</html>
