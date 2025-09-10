@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ChatController {
 
+    
     private final List<ChatMessage> messages = new ArrayList<>();
     private final ChatProducer chatProducer;
 
