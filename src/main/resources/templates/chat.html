@@ -15,8 +15,48 @@
 
 <hr/>
 <h3>Messages:</h3>
-<div th:each="msg : ${messages}">
-    <p><b th:text="${msg.sender}"></b>: <span th:text="${msg.text}"></span></p>
+
+<!-- IMPORTANT: ADD THIS NEW DIV -->
+<div id="messages-container">
+    <div th:each="msg : ${messages}">
+        <p>
+            <b th:text="${msg.sender}"></b>:
+            <span th:text="${msg.text}"></span>
+        </p>
+    </div>
 </div>
+
+<!-- ⭐ PLACE YOUR WEBSOCKET SCRIPT HERE -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log("Connected: " + frame);
+
+            // Subscribe to Kafka → WebSocket topic
+            stompClient.subscribe('/topic/messages', function (msg) {
+                const message = JSON.parse(msg.body);
+                appendMessage(message);
+            });
+        });
+    }
+
+    function appendMessage(msg) {
+        const container = document.getElementById('messages-container');
+        const p = document.createElement('p');
+        p.innerHTML = `<b>${msg.sender}</b>: ${msg.text}`;
+        container.appendChild(p);
+    }
+
+    window.onload = connect;
+</script>
+
 </body>
 </html>
